@@ -1,4 +1,3 @@
-
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
@@ -21,8 +20,17 @@ app.use(
 
 app.use(express.json());
 
+// ROOT ROUTE - ADD THIS
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Food Ordering API is running",
+  });
+});
+
+// HEALTH CHECK
 app.get("/api/health", (_req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
     data: {
       status: "ok",
@@ -32,13 +40,16 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+// ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api", catalogRoutes);
 app.use("/api/orders", orderRoutes);
 
+// ERROR HANDLING
 app.use(notFound);
 app.use(errorHandler);
 
+// DATABASE
 mongoose
   .connect(
     process.env.MONGODB_URI ||
@@ -54,3 +65,4 @@ mongoose
     process.exit(1);
   });
 
+export default app;
